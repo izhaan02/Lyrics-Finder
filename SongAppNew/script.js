@@ -88,19 +88,37 @@ result.addEventListener('click', e => {
     }
 });
 
+// async function getLyrics(artist, songTitle) {
+//     try {
+//         const res = await fetch(`${apiURL}/v1/${artist}/${songTitle}`);
+//         const data = await res.json();
+
+//         if (!data.lyrics) {
+//             displayBotMessage("Lyrics not found 😞");
+//             return;
+//         }
+
+//         const lyrics = data.lyrics.replace(/(\r\n|\r|\n)/g, '<br>');
+//         displayBotMessage(`<strong>${artist} - ${songTitle}</strong><br>${lyrics}`);
+//     } catch {
+//         displayBotMessage("Couldn't fetch lyrics.");
+//     }
+// }
 async function getLyrics(artist, songTitle) {
     try {
-        const res = await fetch(`${apiURL}/v1/${artist}/${songTitle}`);
-        const data = await res.json();
+        const response = await fetch(`${apiURL}/v1/${encodeURIComponent(artist)}/${encodeURIComponent(songTitle)}`);
+        const data = await response.json();
 
-        if (!data.lyrics) {
-            displayBotMessage("Lyrics not found 😞");
-            return;
+        if (data.lyrics) {
+            const lyrics = data.lyrics.replace(/(\r\n|\r|\n)/g, '<br>');
+            displayBotMessage(`<h3>${artist} - ${songTitle}</h3><p>${lyrics}</p>`);
+        } else {
+            const googleSearchURL = `https://www.google.com/search?q=${encodeURIComponent(artist + ' ' + songTitle + ' lyrics')}`;
+            displayBotMessage(`❌ Lyrics not found.<br><a href="${googleSearchURL}" target="_blank">🔎 Search on Google</a>`);
         }
-
-        const lyrics = data.lyrics.replace(/(\r\n|\r|\n)/g, '<br>');
-        displayBotMessage(`<strong>${artist} - ${songTitle}</strong><br>${lyrics}`);
-    } catch {
-        displayBotMessage("Couldn't fetch lyrics.");
+    } catch (error) {
+        console.error(error);
+        displayBotMessage("⚠️ Something went wrong while fetching lyrics. Please try again.");
     }
 }
+
