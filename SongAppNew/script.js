@@ -28,7 +28,7 @@ form.addEventListener("submit", e => {
     displayUserMessage(searchValue);
 
     if (searchValue.toLowerCase() === "name") {
-        displayBotMessage("This app was created by Izhaan & Rishab 🎉");
+        displayBotMessage("This app was created by Izhaan & Rishabh 🎉");
     } else {
         beginSearch(searchValue);
     }
